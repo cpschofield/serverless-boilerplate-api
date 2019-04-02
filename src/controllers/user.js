@@ -4,7 +4,7 @@ import { User } from '../model';
 /**
  * Functions
  */
-export const getUsers = async () => {
+const getUsers = async () => {
   try {
     await connectToDB();
     const users = await User.find({});
