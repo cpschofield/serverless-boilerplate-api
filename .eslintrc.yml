@@ -11,3 +11,6 @@ parserOptions:
   sourceType: module
 rules:
   import/prefer-default-export: 0
+  max-len:
+    - 2
+    - 120
