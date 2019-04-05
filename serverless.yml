@@ -17,10 +17,10 @@ provider:
 
 functions:
   verify-token:
-    handler: dist/controllers/verify.auth
+    handler: dist/index.verify
 
   login:
-    handler: dist/controllers/auth.login
+    handler: dist/index.login
     # description:
     # memorySize: 128
     # runtime: nodejs8.10
@@ -38,7 +38,7 @@ functions:
           cors: true
 
   register:
-    handler: dist/controllers/auth.register
+    handler: dist/index.register
     events:
       - http:
           path: register
@@ -46,7 +46,7 @@ functions:
           cors: true
 
   me:
-    handler: dist/controllers/auth.me
+    handler: dist/index.me
     events:
       - http:
           path: me
@@ -55,7 +55,7 @@ functions:
           authorizer: verify-token
 
   getUsers:
-    handler: dist/controllers/user.getUsers
+    handler: dist/index.getUsers
     events:
       - http:
           path: users

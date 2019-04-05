@@ -1,45 +1,90 @@
-import { connectToDB } from '../service';
-import { User } from '../model';
+import bcrypt from 'bcryptjs-then';
+import { User } from '../models';
+import { connectToDB, token } from '../services';
+import { validPassword } from '../validation';
 
-/**
- * Functions
- */
-const getUsers = async () => {
-  try {
-    await connectToDB();
-    const users = await User.find({});
-    return {
-      statusCode: 200,
-      body: JSON.stringify(users),
-    };
-  } catch (e) {
-    console.log(e);
-    return {
-      statusCode: e.statusCode || 500,
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ message: e.message }),
-    };
-  }
-};
+export class UserController {
+  getUsers = async () => {
+    try {
+      await connectToDB();
+      const users = await User.find({});
+      return {
+        statusCode: 200,
+        body: JSON.stringify(users),
+      };
+    } catch (e) {
+      return {
+        statusCode: e.statusCode || 500,
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ message: e.message }),
+      };
+    }
+  };
 
-const someMW = name => async (event, ctx) => {
-  // do something
-  console.log(`==> MW ${name} did something`);
-  // returns mutated event and contexts
-  return Promise.resolve({ event, ctx });
-};
+  login = async (event) => {
+    try {
+      await connectToDB();
+      const user = await User.findOne({ email: event.body.email });
+      // check for no user found and return error
+      const auth = await bcrypt.compare(event.body.password, user.password);
+      if (!auth) {
+        console.log('not auth');
+      } // do something
+      // check if passwords do not match and return error
+      const newtoken = token(user.userId);
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ auth: true, newtoken }),
+      };
+    } catch (e) {
+      return {
+        statusCode: e.statusCode || 500,
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ stack: e.stack, message: e.message }),
+      };
+    }
+  };
 
-const composeMiddleware = (handler, middleware = []) => async (event, ctx) => {
-  console.log('run middleware');
-  await middleware.reduce(async (promiseChain, currentTask, index) => {
-    const chainResults = await promiseChain;
-    const currentResult = await currentTask(event, ctx);
-    console.log(`==> current task ${index} resolved`);
-    return [...chainResults, currentResult];
-  }, Promise.resolve([]));
-  console.log('END MIDDLEWARE');
-  return handler();
-};
+  register = async (event) => {
+    try {
+      await connectToDB();
+      const validity = validPassword(event.body.password);
+      if (!validity) throw new Error('password mismatch');
+      const existingUser = User.findOne({ email: event.body.email });
+      const hash = existingUser ? Promise.reject(new Error('User with that email exists.')) : await bcrypt.hash(event.body.password, 8);
+      const newUser = User.create({
+        name: event.body.name,
+        email: event.body.email,
+        password: hash,
+      });
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ auth: true, token: token(newUser.id) }),
+      };
+    } catch (e) {
+      return {
+        statusCode: e.statusCode || 500,
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ stack: e.stack, message: e.message }),
+      };
+    }
+  };
 
-// module.exports.getUsers = async (event, ctx) => composeMiddleware(getUsers, [someMW(0), someMW(1)])(event, ctx);
-module.exports.getUsers = composeMiddleware(getUsers, [someMW(0), someMW(1)]);
+  me = async (event) => {
+    try {
+      await connectToDB();
+      const session = await User.findById(event.requestContext.authorizer.principalId, { password: 0 });
+      // check for no user found and return error
+      return {
+        statusCode: 200,
+        body: JSON.stringify(session),
+      };
+    } catch (e) {
+      return {
+        statusCode: e.statusCode || 500,
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ stack: e.stack, message: e.message }),
+      };
+    }
+  };
+}

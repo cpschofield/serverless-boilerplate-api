@@ -1,3 +1,16 @@
-npm i babel-cli serverless -g
+# Serverless Lambda API Boilerplate
 
-to run the linter via CLI you will need to install the esling packages globablly
+## Setup
+
+Install all packages
+To use Babel, Linter & Serverless CLI tools install them globally
+
+## Controllers
+
+## Middleware
+
+## Models
+
+## Services
+
+## Validation
