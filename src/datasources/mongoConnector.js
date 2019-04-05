@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 let isConnected;
 
-export const connectToDB = async () => {
+export const mongoConnect = async () => {
   if (isConnected) {
     return Promise.resolve();
   }

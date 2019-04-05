@@ -1,12 +1,13 @@
 import bcrypt from 'bcryptjs-then';
 import { User } from '../models';
-import { connectToDB, token } from '../services';
+import { mongoConnect } from '../datasources';
+import { token } from '../services';
 import { validPassword } from '../validation';
 
 export class UserController {
   getUsers = async () => {
     try {
-      await connectToDB();
+      await mongoConnect();
       const users = await User.find({});
       return {
         statusCode: 200,
@@ -23,7 +24,7 @@ export class UserController {
 
   login = async (event) => {
     try {
-      await connectToDB();
+      await mongoConnect();
       const user = await User.findOne({ email: event.body.email });
       // check for no user found and return error
       const auth = await bcrypt.compare(event.body.password, user.password);
@@ -47,7 +48,7 @@ export class UserController {
 
   register = async (event) => {
     try {
-      await connectToDB();
+      await mongoConnect();
       const validity = validPassword(event.body.password);
       if (!validity) throw new Error('password mismatch');
       const existingUser = User.findOne({ email: event.body.email });
@@ -72,7 +73,7 @@ export class UserController {
 
   me = async (event) => {
     try {
-      await connectToDB();
+      await mongoConnect();
       const session = await User.findById(event.requestContext.authorizer.principalId, { password: 0 });
       // check for no user found and return error
       return {

@@ -1,2 +1,2 @@
-export * from './user';
-export * from './verify';
+export * from './user.controller';
+export * from './auth.controller';

@@ -1,4 +1,4 @@
-import { UserController, VerifyController } from './controllers';
+import { UserController, AuthController } from './controllers';
 import { composeMiddleware, bodyParser } from './middleware';
 
 /**
@@ -11,7 +11,7 @@ module.exports.me = composeMiddleware(userController.me, [bodyParser()]);
 module.exports.getUsers = composeMiddleware(userController.getUsers);
 
 /**
- * Verify Controller
+ * Auth Controller
  */
-const verifyController = new VerifyController();
-module.exports.verify = composeMiddleware(verifyController.verify, [bodyParser()]);
+const authController = new AuthController();
+module.exports.authenticate = composeMiddleware(authController.authenticate);
