@@ -36,7 +36,7 @@ export class UserController {
         console.log('not auth');
       } // do something
       // check if passwords do not match and return error
-      const newtoken = this.authService.createToken(user.userId);
+      const newtoken = this.authService.createToken(user.id);
       return {
         statusCode: 200,
         body: JSON.stringify({ auth: true, newtoken }),

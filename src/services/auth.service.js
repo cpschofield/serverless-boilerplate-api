@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import SchemaObject from 'schema-object';
-import promisify from 'util';
+import { promisify } from 'util';
 
 const promiseVerifyToken = promisify(jwt.verify);
 
@@ -29,9 +29,12 @@ export class AuthService {
     return new Policy({ policyDocument: document, principalId: id });
   };
 
-  createToken = id => jwt.sign(id, process.env.JWT_SECRET, {
-    expiresIn: process.env.TOKEN_DURATION,
+  createToken = id => jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: parseInt(process.env.TOKEN_DURATION, 10),
   });
 
-  validateToken = async (token, secret) => promiseVerifyToken(token, secret);
+  validateToken = (token, secret) => {
+    console.log(token, secret);
+    return promiseVerifyToken(token, secret);
+  };
 }
