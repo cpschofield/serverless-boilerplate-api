@@ -1,10 +1,14 @@
 import bcrypt from 'bcryptjs-then';
 import { User } from '../models';
 import { mongoConnect } from '../datasources';
-import { token } from '../services';
+import { AuthService } from '../services';
 import { validPassword } from '../validation';
 
 export class UserController {
+  constructor() {
+    this.authService = new AuthService();
+  }
+
   getUsers = async () => {
     try {
       await mongoConnect();
@@ -32,7 +36,7 @@ export class UserController {
         console.log('not auth');
       } // do something
       // check if passwords do not match and return error
-      const newtoken = token(user.userId);
+      const newtoken = this.authService.createToken(user.userId);
       return {
         statusCode: 200,
         body: JSON.stringify({ auth: true, newtoken }),
@@ -60,7 +64,7 @@ export class UserController {
       });
       return {
         statusCode: 200,
-        body: JSON.stringify({ auth: true, token: token(newUser.id) }),
+        body: JSON.stringify({ auth: true, token: this.authService.createToken(newUser.id) }),
       };
     } catch (e) {
       return {
