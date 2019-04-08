@@ -7,7 +7,7 @@ export class AuthController {
 
   async authenticate(event) {
     try {
-      if (!event.authorizationToken) throw new Error('Unauthorised');
+      if (!event.authorizationToken || event.authorizationToken === undefined) throw new Error('Unauthorised');
       const { id } = this.authService.validateToken(event.authorizationToken, process.env.JWT_SECRET);
       return this.authService.createPolicy(id, 'Allow', event.methodArn);
     } catch (e) {
