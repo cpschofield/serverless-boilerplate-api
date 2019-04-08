@@ -1,25 +1,25 @@
 import bcrypt from 'bcryptjs-then';
-import { mongoConnect } from '../datasources';
+import { mongoDatasource } from '../datasources';
 import { User } from '../models';
 
 export class UserService {
   find = async (options = {}) => {
-    await mongoConnect();
+    await mongoDatasource.connect();
     return User.find(options);
   };
 
   findOne = async (options = {}) => {
-    await mongoConnect();
+    await mongoDatasource.connect();
     return User.findOne(options);
   };
 
   findById = async (id) => {
-    await mongoConnect();
+    await mongoDatasource.connect();
     return User.findById(id, { password: 0 });
   };
 
   create = async (body) => {
-    await mongoConnect();
+    await mongoDatasource.connect();
     const existingUser = await this.findOne({ email: body.email });
     const hash = existingUser ? Promise.reject(new Error('User with that email exists.')) : await bcrypt.hash(body.password, 8);
     return User.create({

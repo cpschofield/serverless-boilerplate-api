@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "a serverless lambda api boilerplate",
   "scripts": {
-    "prestart": "npm run build",
+    "prestart": "npm run test",
     "start": "npm run watch & nodemon --exec sls offline start --skipCacheInvalidation",
     "prebuild": "npm run test",
     "build": "babel src -d dist",
