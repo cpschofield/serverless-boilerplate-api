@@ -1,10 +1,12 @@
-service: api-with-auth
+service: serverless-api-boilerplate
 
 provider:
   name: aws
+  stackName: serverless-api-boilerplate # Use a custom name for the CloudFormation stack
+  apiName: serverless-api-gateway # Use a custom name for the API Gateway API
   runtime: nodejs8.10
-  stage: dev
-  region: us-east-1
+  stage: ${env:STAGE}
+  region: ${env:REGION}
   environment:
     JWT_SECRET: ${env:JWT_SECRET}
     DB: ${env:DB}
