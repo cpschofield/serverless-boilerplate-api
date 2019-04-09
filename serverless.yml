@@ -18,8 +18,8 @@ provider:
 #   individually: true
 
 functions:
-  verify-token:
-    handler: dist/index.verify
+  authenticate:
+    handler: dist/index.authenticate
 
   login:
     handler: dist/index.login
@@ -54,7 +54,7 @@ functions:
           path: me
           method: get
           cors: true
-          authorizer: verify-token
+          authorizer: authenticate
 
   getUsers:
     handler: dist/index.getUsers

@@ -3,19 +3,19 @@ import { mongoDatasource } from '../datasources';
 import { User } from '../models';
 
 export class UserService {
-  find = async (options = {}) => {
+  find = async (query = {}) => {
     await mongoDatasource.connect();
-    return User.find(options);
+    return User.find(query);
   };
 
-  findOne = async (options = {}) => {
+  findOne = async (query = {}) => {
     await mongoDatasource.connect();
-    return User.findOne(options);
+    return User.findOne(query);
   };
 
-  findById = async (id) => {
+  findById = async (id, query = {}) => {
     await mongoDatasource.connect();
-    return User.findById(id, { password: 0 });
+    return User.findById(id, query);
   };
 
   create = async (body) => {

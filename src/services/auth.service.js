@@ -19,7 +19,7 @@ const Document = new SchemaObject({
 
 const Policy = new SchemaObject({
   policyDocument: Document,
-  principalId: Number,
+  principalId: String,
 });
 
 export class AuthService {
@@ -29,12 +29,9 @@ export class AuthService {
     return new Policy({ policyDocument: document, principalId: id });
   };
 
-  createToken = id => jwt.sign({ id }, process.env.JWT_SECRET, {
+  createToken = id => jwt.sign({ principalId: id }, process.env.JWT_SECRET, {
     expiresIn: parseInt(process.env.TOKEN_DURATION, 10),
   });
 
-  validateToken = (token, secret) => {
-    console.log(token, secret);
-    return promiseVerifyToken(token, secret);
-  };
+  validateToken = token => promiseVerifyToken(token.slice(7), process.env.JWT_SECRET);
 }

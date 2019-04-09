@@ -4,7 +4,7 @@
   "description": "a serverless lambda api boilerplate",
   "scripts": {
     "prestart": "npm run test",
-    "start": "npm run watch & nodemon --exec sls offline start --skipCacheInvalidation",
+    "start": "npm run watch & nodemon --exec sls offline start --skipCacheInvalidation --debugOffline",
     "prebuild": "npm run test",
     "build": "babel src -d dist",
     "pretest": "npm run clean && npm run lint",
