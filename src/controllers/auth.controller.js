@@ -10,10 +10,10 @@ export class AuthController {
     try {
       if (!event.authorizationToken || event.authorizationToken === undefined) throw error.formatted({ message: 'Unauthorised', statusCode: 403 });
 
-      const validated = await this.authService.validateToken(event.authorizationToken);
-      if (!validity || validity === undefined) throw error.formatted({ message: 'Invalid token', statusCode: 403 });
+      const { id } = await this.authService.validateToken(event.authorizationToken);
+      if (!id || id === undefined) throw error.formatted({ message: 'Invalid token', statusCode: 403 });
 
-      return response.success(this.authService.createPolicy(validated.id, 'Allow', event.methodArn));
+      return response.success(this.authService.createPolicy(id, 'Allow', event.methodArn));
     } catch (e) {
       return response.error(e);
     }
