@@ -37,8 +37,6 @@ To deploy a single function use the serverless CLI to run `sls deploy function -
 
 ## To Do Tasks
 
-- Need to implement a more rigorous error handling capability
-- Clean up all the code generally
 - Implement test cases
 - Add default env variables in case they are undefined
 - Current implementation of babel --watch is inelegant
