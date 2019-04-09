@@ -1,8 +1,6 @@
-import jwt from 'jsonwebtoken';
+import jwt from 'jwt-then';
 import SchemaObject from 'schema-object';
 import { promisify } from 'util';
-
-const promiseVerifyToken = promisify(jwt.verify);
 
 const NotEmptyString = { type: String, minLength: 1 };
 
@@ -33,5 +31,5 @@ export class AuthService {
     expiresIn: parseInt(process.env.TOKEN_DURATION, 10),
   });
 
-  validateToken = token => promiseVerifyToken(token.slice(7), process.env.JWT_SECRET);
+  validateToken = token => jwt.verify(token.slice(7), process.env.JWT_SECRET);
 }
