@@ -13,7 +13,8 @@ export class AuthController {
       const { id } = await this.authService.validateToken(event.authorizationToken);
       if (!id || id === undefined) throw error.formatted({ message: 'Invalid token', statusCode: 403 });
 
-      return response.success(this.authService.createPolicy(id, 'Allow', event.methodArn));
+      // this should only return the policy object
+      return this.authService.createPolicy(id, 'Allow', event.methodArn);
     } catch (e) {
       return response.error(e);
     }
