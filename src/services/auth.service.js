@@ -1,6 +1,5 @@
 import jwt from 'jwt-then';
 import SchemaObject from 'schema-object';
-import { promisify } from 'util';
 
 const NotEmptyString = { type: String, minLength: 1 };
 

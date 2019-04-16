@@ -37,7 +37,7 @@ export class UserController {
       if (!validity || validity === undefined) throw error.formatted({ message: 'Password mismatch', statusCode: 400 });
 
       const user = await this.userService.create(event.body);
-      return response.success({ auth: true, token: this.authService.createToken(user.id) });
+      return response.success({ auth: true, token: await this.authService.createToken(user.id) });
     } catch (e) {
       return response.error(e);
     }
